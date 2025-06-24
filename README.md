@@ -14,7 +14,7 @@ Application de gestion de tâches avec une API REST PHP et une interface utilisa
 1. Cloner le projet dans le dossier htdocs de XAMPP:
 ```bash
 cd c:/xampp/htdocs
-git clone [url-du-repo] api-todo
+git clone https://github.com/Mouhamed-Kane/api-todo
 ```
 
 2. Créer la base de données:
