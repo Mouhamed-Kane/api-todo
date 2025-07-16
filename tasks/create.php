@@ -1,33 +1,35 @@
 <?php
-// Inclure le fichier de connexion
+
 require_once '../config/database.php';
-
-// Lire les données JSON brutes envoyées dans la requête
+// Accepter uniquement POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+http_response_code(405);
+echo json_encode(["message" => "Méthode non autorisée."]);
+exit;
+}
 $data = json_decode(file_get_contents("php://input"));
-
-// Vérifier que le champ 'title' est présent et non vide
-if (!isset($data->title) || empty(trim($data->title))) {
-    http_response_code(400); // Requête incorrecte
-    echo json_encode(["message" => "Le champ 'title' est requis."]);
-    exit;
+if (!isset($data->title) || trim($data->title) === "") {
+http_response_code(400);
+echo json_encode(["message" => "Le titre est requis."]);
+exit;
 }
-
-// Nettoyer et récupérer le titre
 $title = htmlspecialchars(strip_tags($data->title));
-
-// Requête SQL pour insérer une nouvelle tâche
-$query = "INSERT INTO tasks (title, done) VALUES (:title, 0)";
-$stmt = $pdo->prepare($query);
-
-// Lier la variable PHP à la requête
-$stmt->bindParam(':title', $title, PDO::PARAM_STR);
-
-// Exécuter et vérifier le résultat
-if ($stmt->execute()) {
-    http_response_code(201); // 201 = Créé
-    echo json_encode(["message" => "Tâche créée avec succès."]);
-} else {
-    http_response_code(500); // Erreur serveur
-    echo json_encode(["message" => "Impossible de créer la tâche."]);
+if (strlen($title) > 255) {
+http_response_code(400);
+echo json_encode(["message" => "Titre trop long."]);exit;
 }
+try {
+$stmt = $pdo->prepare("INSERT INTO tasks (title) VALUES (:title)");
+$stmt->bindParam(':title', $title, PDO::PARAM_STR);
+if ($stmt->execute()) {
+http_response_code(201); // Created
+echo json_encode(["message" => "Tâche ajoutée avec succès."]);
+} else {
+throw new Exception("Erreur d'insertion.");
+}
+} catch (Exception $e) {
+http_response_code(500);
+echo json_encode(["message" => "Erreur serveur : " . $e->getMessage()]);
+}
+
 ?>

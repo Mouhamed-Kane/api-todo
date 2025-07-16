@@ -36,17 +36,18 @@ CREATE TABLE tasks (
 api-todo/
 ├── config/
 │   └── database.php
-├── models/
-│   └── task.php
 ├── tasks/
 │   ├── create.php
 │   ├── delete.php
 │   └── get.php
+│   └── get-one.php
+│   └── update.php
 ├── todo-front/
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
 └── .htaccess
+└── README.md
 ```
 
 ## Endpoints API
@@ -54,6 +55,8 @@ api-todo/
 - GET `/tasks/get.php` : Récupérer toutes les tâches
 - POST `/tasks/create.php` : Créer une nouvelle tâche
 - DELETE `/tasks/delete.php` : Supprimer une tâche
+- GET `/tasks/get-one.php` : Récupérer une tâche spécifique
+- UPDATE `/tasks/update.php` : Mettre à jour une tâche
 
 ## Utilisation
 
